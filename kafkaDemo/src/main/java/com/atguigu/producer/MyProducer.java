@@ -5,10 +5,11 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 public class MyProducer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         //1.创建kafka生产者的配置信息
         Properties properties = new Properties();
         //2.kafka 集群，broker-list
@@ -30,6 +31,9 @@ public class MyProducer {
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
         //10.发送消息
         for (int i=0;i < 10;i++){
+            //send()的返回值Future<RecordMetadata>调用get()即可变为同步发送
+            //producer.send(new ProducerRecord<String, String>("first","atguigu---" + i)).get();
+            //异步发送
             producer.send(new ProducerRecord<String, String>("first","atguigu---" + i));
         }
         //11.关闭资源
